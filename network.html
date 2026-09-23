@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Green AI | Network Topology</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="network-page page-shell">
+  <header class="topbar glass-panel">
+    <div class="brand-group">
+      <div class="brand-mark"><i class="fa-solid fa-network-wired neon-icon"></i></div>
+      <div class="brand-name">Green AI <span>Topology</span></div>
+      <span class="brand-badge"><i class="fa-solid fa-shield-heart"></i> Core mesh</span>
+    </div>
+
+    <div class="topbar-actions">
+      <span class="cluster-pill"><i class="fa-solid fa-circle-dot fa-beat-fade"></i> Cluster online</span>
+      <span class="user-pill"><i class="fa-solid fa-user"></i> <span id="user-name-display">Usuario</span></span>
+      <span id="user-role-badge" class="role-pill">OPERATOR</span>
+      <span id="live-clock" class="clock mono">--:--:--</span>
+      <button id="global-settings-btn" class="btn btn-secondary" title="Configuración global">⚙️</button>
+      <a href="dashboard.html" class="btn btn-secondary"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+    </div>
+  </header>
+
+  <main class="network-shell">
+    <div class="network-layout">
+      <section class="visual-panel glass-panel">
+        <div class="panel-head">
+          <h2>Infraestructura de red</h2>
+          <span class="panel-chip">Kubernetes core</span>
+        </div>
+
+        <div class="network-toolbar">
+          <div class="view-toggle" role="tablist" aria-label="Selector de vista">
+            <button type="button" class="view-toggle-btn active" data-view-toggle="logical" aria-pressed="true">Vista Lógica</button>
+            <button type="button" class="view-toggle-btn" data-view-toggle="physical" aria-pressed="false">Vista Física</button>
+          </div>
+        </div>
+
+        <div id="network-logic-panel" class="network-panel active">
+          <div class="network-canvas">
+            <svg id="network-connections-svg" class="network-svg" viewBox="0 0 1000 760" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="networkGradient" x1="0%" x2="100%" y1="0%" y2="0%">
+                  <stop offset="0%" stop-color="#22D3EE" />
+                  <stop offset="50%" stop-color="#A855F7" />
+                  <stop offset="100%" stop-color="#10B981" />
+                </linearGradient>
+                <linearGradient id="networkGradientAlt" x1="0%" x2="100%" y1="0%" y2="0%">
+                  <stop offset="0%" stop-color="#10B981" />
+                  <stop offset="50%" stop-color="#06B6D4" />
+                  <stop offset="100%" stop-color="#A855F7" />
+                </linearGradient>
+              </defs>
+            </svg>
+
+            <div class="switch-core">
+              <div class="switch-label"><i class="fa-solid fa-cube"></i> Switch core</div>
+              <div class="switch-name">SWITCH CORE K8s</div>
+              <div class="switch-band"></div>
+            </div>
+
+            <div id="hardware-cards" class="server-grid" aria-live="polite"></div>
+            <div class="server-carousel-controls" aria-label="Navegación de servidores">
+              <button type="button" id="server-prev-btn" class="carousel-btn">Anterior</button>
+              <div id="server-page-bars" class="server-page-bars" aria-hidden="false" role="tablist" aria-label="Paginador de bloques"></div>
+              <button type="button" id="server-next-btn" class="carousel-btn">Siguiente</button>
+              <button type="button" id="server-autoplay-btn" class="carousel-btn secondary">Pausar rotación</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="network-physical-panel" class="network-panel">
+          <div class="physical-rack-wrap">
+            <div class="rack-status-row">
+              <span><i class="fa-solid fa-circle"></i> 50 servidores</span>
+              <span><i class="fa-solid fa-bolt"></i> Rack A / B / C</span>
+            </div>
+            <div id="physical-rack" class="physical-rack"></div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="legend-panel glass-panel">
+        <div class="panel-head">
+          <h2>Estado de red</h2>
+          <span class="panel-chip">Live</span>
+        </div>
+
+        <div class="summary-list">
+          <div class="summary-item">
+            <span>Nodes activos</span>
+            <strong id="network-nodes">--</strong>
+          </div>
+          <div class="summary-item">
+            <span>Tráfico</span>
+            <strong id="network-traffic">--</strong>
+          </div>
+          <div class="summary-item">
+            <span>Latencia</span>
+            <strong id="network-latency">-- ms</strong>
+          </div>
+        </div>
+
+        <div class="panel-head" style="margin-top: 12px;">
+          <h2>Últimos eventos</h2>
+        </div>
+        <ul id="network-log-feed" class="log-feed"></ul>
+        <div class="eco-badge">
+          <div class="eco-icon">🌱</div>
+          <div class="eco-content">
+            <div class="eco-title">Índice de Eficiencia Eco</div>
+            <div class="eco-value">94% <span class="eco-sub">/ Red Verde Active</span></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+  <!-- Global Settings Popover (compact) -->
+  <div id="settings-popover" class="settings-popover" aria-hidden="true">
+    <div class="popover-panel glass-panel">
+      <div class="popover-row">
+        <div>
+          <label class="switch compact">
+            <input id="global-theme-toggle" type="checkbox" />
+            <span class="slider"></span>
+          </label>
+          <span class="popover-label">Dark / Light</span>
+        </div>
+        <div class="palette">
+          <button class="palette-option" data-accent="cyan">Cyan</button>
+          <button class="palette-option" data-accent="green">Verde</button>
+          <button class="palette-option" data-accent="purple">Púrpura</button>
+        </div>
+      </div>
+      <div class="popover-row profile-box">
+        <div><strong>Nombre:</strong> <span id="settings-user-name">-</span></div>
+        <div><strong>Email:</strong> <span id="settings-user-email">-</span></div>
+        <div><strong>Rol:</strong> <span id="settings-user-role">-</span></div>
+      </div>
+      <div class="popover-actions">
+        <button id="apply-accent-btn" class="btn btn-primary">Aplicar</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Green AI | Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 460px;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .navbar a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .navbar a:hover { color: #10b981; }
+
+        .card {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .card-header h2 {
+            margin: 0 0 5px 0;
+            font-size: 1.5rem;
+            color: #ffffff;
+        }
+
+        .card-header p {
+            margin: 0;
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #cbd5e1;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 12px;
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #10b981;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background-color: #10b981;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+
+        .btn-submit:hover {
+            background-color: #059669;
+        }
+
+        #message {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        .auth-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #0f172a;
+            margin: 0;
+            padding: 0;
+        }
+
+        .auth-shell {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .auth-panel {
+            padding: 20px;
+            border-radius: 12px;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+        }
+
+        .auth-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .auth-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #10b981;
+        }
+
+        .auth-link {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .auth-link:hover {
+            color: #10b981;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .auth-header h1 {
+            margin: 0 0 10px 0;
+            font-size: 1.8rem;
+            color: #ffffff;
+        }
+
+        .auth-header p {
+            margin: 0;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .input-group {
+            position: relative;
+            width: 100%;
+        }
+
+        .input-group i {
+            position: absolute;
+            top: 12px;
+            left: 10px;
+            color: #94a3b8;
+            font-size: 1.2rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 40px 12px 40px;
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #10b981;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            background-color: #10b981;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: #059669;
+        }
+
+        .message-box {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        .form-footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        .form-footer a {
+            color: #10b981;
+            text-decoration: none;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Neon focus effect */
+        .input-group input:focus {
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
+        }
+
+        .neon-icon {
+            color: #10b981;
+            font-size: 1.2rem;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body class="auth-page page-shell">
+  <div class="auth-shell">
+    <div class="auth-panel glass-panel">
+      <div class="auth-topbar">
+        <div class="auth-brand"><i class="fa-solid fa-leaf neon-icon"></i> Green AI</div>
+        <a href="index.html" class="auth-link"><i class="fa-solid fa-arrow-left"></i> Volver</a>
+      </div>
+
+      <div class="auth-header">
+        <h1>Iniciar Sesión</h1>
+        <p>Accede al panel de telemetría y gestión del clúster.</p>
+      </div>
+
+      <form id="login-form" novalidate>
+        <div class="form-grid">
+          <div class="input-group">
+            <i class="fa-solid fa-envelope"></i>
+            <input id="email" type="email" placeholder="Correo institucional" required />
+          </div>
+
+          <div class="input-group">
+            <i class="fa-solid fa-lock"></i>
+            <input id="password" type="password" placeholder="Contraseña" required />
+          </div>
+
+          <button class="btn btn-primary submit-btn" type="submit">
+            <i class="fa-solid fa-right-to-bracket"></i> Entrar al sistema
+          </button>
+        </div>
+      </form>
+
+      <div id="message" class="message-box" aria-live="polite"></div>
+
+      <div class="form-footer">
+        ¿No tienes cuenta? <a href="register.html">Crear usuario</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
