@@ -1,186 +1,22 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Green AI | Dashboard</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link rel="stylesheet" href="styles.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body class="dashboard-page page-shell">
-  <header class="topbar glass-panel">
-    <div class="brand-group">
-      <div class="brand-mark"><i class="fa-solid fa-leaf neon-icon"></i></div>
-      <div class="brand-name">Green AI <span>PMV1</span></div>
-      <span class="brand-badge"><i class="fa-solid fa-signal"></i> Frontend Ops</span>
-    </div>
-
-    <div class="topbar-actions">
-      <span class="cluster-pill"><i class="fa-solid fa-circle-dot fa-beat-fade"></i> Cluster online</span>
-      <span class="user-pill"><i class="fa-solid fa-user"></i> <span id="user-name-display">Usuario</span></span>
-      <span id="user-role-badge" class="role-pill">OPERATOR</span>
-      <span id="live-clock" class="clock mono">--:--:--</span>
-      <button id="global-settings-btn" class="btn btn-secondary" title="Configuración global">⚙️</button>
-      <button id="logout-btn" class="btn btn-secondary" type="button"><i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</button>
-    </div>
-  </header>
-
-  <main class="dashboard-shell">
-    <section class="kpi-grid" aria-label="Indicadores clave">
-      <article class="kpi-card glass-panel">
-        <div class="kpi-head">
-          <div class="kpi-icon"><i class="fa-solid fa-server"></i></div>
-          <span class="kpi-badge success"><i class="fa-solid fa-circle"></i> En línea</span>
-        </div>
-        <span class="kpi-label">Nodos activos</span>
-        <div class="kpi-value"><strong id="kpi-nodes">--</strong><span>/ 50</span></div>
-      </article>
-
-      <article class="kpi-card glass-panel">
-        <div class="kpi-head">
-          <div class="kpi-icon"><i class="fa-solid fa-bolt"></i></div>
-          <span class="kpi-badge cyan"><i class="fa-solid fa-bolt-lightning"></i> Potencia</span>
-        </div>
-        <span class="kpi-label">Potencia total</span>
-        <div class="kpi-value"><strong id="kpi-watts" class="mono">-- W</strong><span>promedio</span></div>
-      </article>
-
-      <article class="kpi-card glass-panel">
-        <div class="kpi-head">
-          <div class="kpi-icon"><i class="fa-solid fa-microchip"></i></div>
-          <span class="kpi-badge cyan"><i class="fa-solid fa-memory"></i> CPU</span>
-        </div>
-        <span class="kpi-label">Uso CPU global</span>
-        <div class="kpi-value"><strong id="kpi-cpu" class="mono">-- %</strong><span>utilización</span></div>
-      </article>
-
-      <article class="kpi-card glass-panel">
-        <div class="kpi-head">
-          <div class="kpi-icon"><i class="fa-solid fa-memory"></i></div>
-          <span class="kpi-badge purple"><i class="fa-solid fa-database"></i> RAM</span>
-        </div>
-        <span class="kpi-label">Uso RAM global</span>
-        <div class="kpi-value"><strong id="kpi-ram" class="mono">-- %</strong><span>utilización</span></div>
-      </article>
-    </section>
-
-    <section class="chart-grid" aria-label="Gráficos de telemetría">
-      <article class="chart-card glass-panel">
-        <div class="chart-header">
-          <h3>Consumo energético</h3>
-          <span class="chart-sub">Watts</span>
-        </div>
-        <div class="chart-surface"><canvas id="wattsChart"></canvas></div>
-      </article>
-
-      <article class="chart-card glass-panel">
-        <div class="chart-header">
-          <h3>Utilización de recursos</h3>
-          <span class="chart-sub">CPU / RAM</span>
-        </div>
-        <div class="chart-surface"><canvas id="resourcesChart"></canvas></div>
-      </article>
-
-      <article class="chart-card glass-panel">
-        <div class="chart-header">
-          <h3>Consumo Energético Mensual</h3>
-          <span class="chart-sub">kWh</span>
-        </div>
-        <div class="chart-surface"><canvas id="monthlyEnergyChart"></canvas></div>
-      </article>
-    </section>
-
-    <section class="table-card glass-panel" data-admin-only="true">
-      <h3>Operadores registrados</h3>
-      <div class="table-wrapper">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Email</th>
-              <th>Rol</th>
-              <th>Fecha</th>
-            </tr>
-          </thead>
-          <tbody id="usuarios-table-body"></tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="table-card glass-panel">
-      <h3>Hardware del clúster</h3>
-      <div class="table-wrapper">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Hostname</th>
-              <th>IP</th>
-              <th>CPU</th>
-              <th>RAM</th>
-              <th>Watts</th>
-              <th>Operador</th>
-              <th>Estado</th>
-            </tr>
-          </thead>
-          <tbody id="hardware-table-body"></tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="table-card glass-panel">
-      <h3>Últimos logs de telemetría</h3>
-      <div class="table-wrapper">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Timestamp</th>
-              <th>Nodo</th>
-              <th>CPU</th>
-              <th>RAM</th>
-              <th>Temp</th>
-              <th>Consumo</th>
-            </tr>
-          </thead>
-          <tbody id="logs-table-body" class="mono"></tbody>
-        </table>
-      </div>
-    </section>
-  </main>
-
-  <script src="config.local.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.1"></script>
-  <script src="app.js"></script>
-  <!-- Global Settings Popover (compact) -->
-  <div id="settings-popover" class="settings-popover" aria-hidden="true">
-    <div class="popover-panel glass-panel">
-      <div class="popover-row">
-        <div>
-          <label class="switch compact">
-            <input id="global-theme-toggle" type="checkbox" />
-            <span class="slider"></span>
-          </label>
-          <span class="popover-label">Dark / Light</span>
-        </div>
-        <div class="palette">
-          <button class="palette-option" data-accent="cyan">Cyan</button>
-          <button class="palette-option" data-accent="green">Verde</button>
-          <button class="palette-option" data-accent="purple">Púrpura</button>
-        </div>
-      </div>
-      <div class="popover-row profile-box">
-        <div><strong>Nombre:</strong> <span id="settings-user-name">-</span></div>
-        <div><strong>Email:</strong> <span id="settings-user-email">-</span></div>
-        <div><strong>Rol:</strong> <span id="settings-user-role">-</span></div>
-      </div>
-      <div class="popover-actions">
-        <button id="apply-accent-btn" class="btn btn-primary">Aplicar</button>
-      </div>
-    </div>
-  </div>
-</body>
-</html>
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Green AI | Monitoring</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="monitoring.css">
+</head><body class="dashboard-page page-shell">
+<header class="topbar glass-panel"><div class="brand-name">Green AI <span>Monitoring</span></div>
+<div class="topbar-actions"><span id="user-name-display"></span><span id="user-role-badge" class="role-pill"></span>
+<a href="network.html" class="btn btn-secondary">Topología</a><button id="logout-btn" class="btn btn-secondary">Cerrar sesión</button></div></header>
+<main class="dashboard-shell">
+<section class="glass-panel monitor-panel"><h1>Métricas de infraestructura</h1>
+<p>CPU, memoria, red y almacenamiento por nodo. La procedencia indica si los datos son simulados u observados.</p>
+<div class="filters"><label>Métrica<select id="metric"></select></label><label>Clúster<select id="cluster"><option value="">Todos los clústeres</option></select></label>
+<label>Nodo<select id="node"><option value="">Todos los nodos</option></select></label><label>Histórico<select id="period"><option value="5">5 minutos</option><option value="15" selected>15 minutos</option><option value="60">1 hora</option></select></label>
+<button id="refresh" class="btn btn-primary">Actualizar</button></div>
+<p id="request-status" role="status" aria-live="polite">Conectando…</p><p id="metric-description"></p></section>
+<section class="table-card glass-panel"><h2>Valores actuales</h2><p id="current-status"></p><p id="warnings"></p>
+<div class="table-wrapper"><table class="data-table"><thead><tr><th>Clúster</th><th>Nodo</th><th>Interfaz / filesystem</th><th>Valor</th><th>Procedencia</th><th>Calidad</th><th>Instante</th></tr></thead><tbody id="metric-rows"></tbody></table></div></section>
+<section class="chart-card glass-panel"><h2>Histórico</h2><p id="history-status"></p><div class="monitor-chart"><canvas id="history-chart"></canvas></div></section>
+<section class="pending-grid">
+<article class="glass-panel monitor-panel"><span class="pending">Próximamente</span><h2>Potencia y energía</h2><p>En desarrollo · todavía no hay una fuente de W o kWh en Monitoring.</p></article><article class="glass-panel monitor-panel"><span class="pending">Próximamente</span><h2>Predicciones y ahorro</h2><p>En desarrollo · pendiente del servicio Prediction y de sus contratos.</p></article><article class="glass-panel monitor-panel"><span class="pending">Próximamente</span><h2>Inventario y operadores</h2><p>En desarrollo · pendiente de una API de administración autorizada.</p></article></section></main>
+<script src="config.local.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.1"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+<script src="metrics.js"></script><script src="monitoring.js"></script><script src="app.js"></script></body></html>
