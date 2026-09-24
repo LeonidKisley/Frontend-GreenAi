@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Green AI | Cyber Fleet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <script>try{if(localStorage.getItem('greenai-theme')==='light'){document.documentElement.classList.add('light-mode');}}catch(e){}</script>
+</head>
+<body class="landing-page page-shell">
+
+    <div class="landing-container">
+        <!-- Navegación Superior -->
+        <nav class="navbar">
+            <div class="nav-brand">
+                <i class="fa-solid fa-microchip neon-icon"></i>
+                Green AI <span>Cyber Ops</span>
+            </div>
+            <div class="nav-links">
+                <a class="nav-link active" href="index.html"><i class="fa-solid fa-house"></i> Inicio</a>
+                <a class="nav-link" href="dashboard.html"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+                <a class="nav-link" href="login.html"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+                <a class="nav-link" href="register.html"><i class="fa-solid fa-user-plus"></i> Registro</a>
+                <button id="settings-btn" class="icon-btn settings-btn" type="button" aria-label="Configuración" title="Configuración"><i class="fa-solid fa-gear"></i></button>
+            </div>
+        </nav>
+
+        <!-- Tarjeta Principal (Hero) -->
+        <main class="hero-panel glass-panel">
+            <div class="hero-layout">
+                <div>
+                    <div class="eyebrow"><i class="fa-solid fa-satellite-dish"></i> Estación de operación</div>
+                    <h1 class="hero-title">Plataforma <span class="highlight">Green AI</span> para data centers inteligentes.</h1>
+                    <p class="hero-subtitle">
+                        Monitorea consumo energético, automatiza decisiones de optimización y protege la continuidad del servicio
+                        con métricas en tiempo real, IA predictiva y control de infraestructura cibernética.
+                    </p>
+
+                    <div class="hero-actions">
+                        <a class="btn btn-primary neon-glow" href="login.html"><i class="fa-solid fa-arrow-right-to-bracket"></i> Iniciar sesión</a>
+                        <a class="btn btn-secondary" href="register.html"><i class="fa-solid fa-user-plus"></i> Registrarse</a>
+                    </div>
+
+                    <div class="hero-badges" aria-label="Indicadores de plataforma">
+                        <span class="hero-stat"><i class="fa-solid fa-shield-halved"></i> SLA protegido</span>
+                        <span class="hero-stat"><i class="fa-solid fa-wave-square"></i> 99.98% uptime</span>
+                        <span class="hero-stat"><i class="fa-solid fa-bolt"></i> 41% ahorro</span>
+                    </div>
+                </div>
+
+                <div class="hero-visual" aria-label="Visualización futurista">
+                    <div class="hero-orbit"></div>
+                    <div class="center-core"><i class="fa-solid fa-leaf neon-icon"></i></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Sección de Características -->
+        <section class="feature-grid" aria-label="Características">
+            <article class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-chart-line"></i></div>
+                <h3>Telemetría en tiempo real</h3>
+                <p>Seguimiento continuo de CPU, RAM, temperatura y consumo eléctrico con lectura de eventos cada 10 segundos.</p>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-brain"></i></div>
+                <h3>IA predictiva</h3>
+                <p>Modelos de optimización para anticipar picos de carga, ajustar recursos y reducir consumo energético.</p>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-server"></i></div>
+                <h3>Infraestructura resiliente</h3>
+                <p>Control de nodos, topología de red y estado del clúster con cada puerto y enlace monitoreado.</p>
+            </article>
+        </section>
+
+        <!-- Pie de página -->
+        <footer>
+            © 2026 Universidad Continental | Proyecto Green AI | Ley N° 29733
+        </footer>
+    </div>
+
+    <div id="settings-modal" class="modal-overlay" hidden>
+      <div class="settings-modal glass-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+        <div class="settings-head">
+          <div class="settings-title"><i class="fa-solid fa-gear"></i> <span id="settings-title">Configuración</span></div>
+          <button id="settings-close" class="settings-close" type="button" aria-label="Cerrar"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="settings-body">
+          <section class="settings-section">
+            <h3>Apariencia</h3>
+            <div class="theme-row">
+              <div class="theme-info">
+                <i class="fa-solid fa-circle-half-stroke"></i>
+                <div>
+                  <strong>Modo de interfaz</strong>
+                  <span>Alterna entre claro y oscuro</span>
+                </div>
+              </div>
+              <button id="theme-toggle" class="theme-switch" type="button" role="switch" aria-checked="false" aria-label="Cambiar tema">
+                <span class="theme-track"><i class="fa-solid fa-sun"></i><span class="theme-thumb"></span><i class="fa-solid fa-moon"></i></span>
+              </button>
+            </div>
+          </section>
+          <section class="settings-section">
+            <h3>Cuenta</h3>
+            <div class="account-card">
+              <div class="account-avatar"><i class="fa-solid fa-user"></i></div>
+              <div class="account-info">
+                <strong id="settings-user-name">Invitado</strong>
+                <span id="settings-user-email">No has iniciado sesión</span>
+                <span id="settings-user-role" class="tag cyan"></span>
+              </div>
+            </div>
+            <button id="settings-account-btn" class="btn btn-secondary action-btn" type="button">
+              <i class="fa-solid fa-right-to-bracket"></i> Iniciar sesión
+            </button>
+          </section>
+        </div>
+      </div>
+    </div>
+
+</body>
+</html>

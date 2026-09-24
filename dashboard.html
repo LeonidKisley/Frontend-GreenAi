@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Green AI | Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>try{if(localStorage.getItem('greenai-theme')==='light'){document.documentElement.classList.add('light-mode');}}catch(e){}</script>
+</head>
+<body class="dashboard-page page-shell">
+  <header class="topbar glass-panel">
+    <div class="brand-group">
+      <div class="brand-mark"><i class="fa-solid fa-leaf neon-icon"></i></div>
+      <div class="brand-name">Green AI <span>PMV1</span></div>
+      <span class="brand-badge"><i class="fa-solid fa-signal"></i> Frontend Ops</span>
+    </div>
+
+    <div class="topbar-actions">
+      <span class="cluster-pill"><i class="fa-solid fa-circle-dot fa-beat-fade"></i> Cluster online</span>
+      <span class="user-pill"><i class="fa-solid fa-user"></i> <span id="user-name-display">Usuario</span></span>
+      <span id="live-clock" class="clock mono">--:--:--</span>
+      <button id="settings-btn" class="icon-btn settings-btn" type="button" aria-label="Configuración" title="Configuración"><i class="fa-solid fa-gear"></i></button>
+      <button id="logout-btn" class="btn btn-secondary" type="button"><i class="fa-solid fa-right-from-bracket"></i> Cerrar sesión</button>
+    </div>
+  </header>
+
+  <main class="dashboard-shell">
+    <section class="kpi-grid" aria-label="Indicadores clave">
+      <article class="kpi-card glass-panel">
+        <div class="kpi-head">
+          <div class="kpi-icon"><i class="fa-solid fa-server"></i></div>
+          <span class="kpi-badge success"><i class="fa-solid fa-circle"></i> En línea</span>
+        </div>
+        <span class="kpi-label">Nodos activos</span>
+        <div class="kpi-value"><strong id="kpi-nodes">--</strong><span>/ 50</span></div>
+      </article>
+
+      <article class="kpi-card glass-panel">
+        <div class="kpi-head">
+          <div class="kpi-icon"><i class="fa-solid fa-bolt"></i></div>
+          <span class="kpi-badge cyan"><i class="fa-solid fa-bolt-lightning"></i> Potencia</span>
+        </div>
+        <span class="kpi-label">Potencia total</span>
+        <div class="kpi-value"><strong id="kpi-watts" class="mono">-- W</strong><span>promedio</span></div>
+      </article>
+
+      <article class="kpi-card glass-panel">
+        <div class="kpi-head">
+          <div class="kpi-icon"><i class="fa-solid fa-microchip"></i></div>
+          <span class="kpi-badge cyan"><i class="fa-solid fa-memory"></i> CPU</span>
+        </div>
+        <span class="kpi-label">Uso CPU global</span>
+        <div class="kpi-value"><strong id="kpi-cpu" class="mono">-- %</strong><span>utilización</span></div>
+      </article>
+
+      <article class="kpi-card glass-panel">
+        <div class="kpi-head">
+          <div class="kpi-icon"><i class="fa-solid fa-memory"></i></div>
+          <span class="kpi-badge purple"><i class="fa-solid fa-database"></i> RAM</span>
+        </div>
+        <span class="kpi-label">Uso RAM global</span>
+        <div class="kpi-value"><strong id="kpi-ram" class="mono">-- %</strong><span>utilización</span></div>
+      </article>
+    </section>
+
+    <section class="chart-grid" aria-label="Gráficos de telemetría">
+      <article class="chart-card glass-panel">
+        <div class="chart-header">
+          <h3>Consumo energético</h3>
+          <span class="chart-sub">Watts</span>
+        </div>
+        <div class="chart-surface"><canvas id="wattsChart"></canvas></div>
+      </article>
+
+      <article class="chart-card glass-panel">
+        <div class="chart-header">
+          <h3>Utilización de recursos</h3>
+          <span class="chart-sub">CPU / RAM</span>
+        </div>
+        <div class="chart-surface"><canvas id="resourcesChart"></canvas></div>
+      </article>
+
+      <article class="chart-card glass-panel">
+        <div class="chart-header">
+          <h3>Consumo Energético Mensual</h3>
+          <span class="chart-sub">kWh</span>
+        </div>
+        <div class="chart-surface"><canvas id="monthlyEnergyChart"></canvas></div>
+      </article>
+    </section>
+
+    <section class="table-card glass-panel">
+      <h3>Operadores registrados</h3>
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Rol</th>
+              <th>Fecha</th>
+            </tr>
+          </thead>
+          <tbody id="usuarios-table-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="table-card glass-panel">
+      <h3>Hardware del clúster</h3>
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Hostname</th>
+              <th>IP</th>
+              <th>CPU</th>
+              <th>RAM</th>
+              <th>Watts</th>
+              <th>Operador</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody id="hardware-table-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="table-card glass-panel">
+      <h3>Últimos logs de telemetría</h3>
+      <div class="table-wrapper">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Nodo</th>
+              <th>CPU</th>
+              <th>RAM</th>
+              <th>Temp</th>
+              <th>Consumo</th>
+            </tr>
+          </thead>
+          <tbody id="logs-table-body" class="mono"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <div id="settings-modal" class="modal-overlay" hidden>
+    <div class="settings-modal glass-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <div class="settings-head">
+        <div class="settings-title"><i class="fa-solid fa-gear"></i> <span id="settings-title">Configuración</span></div>
+        <button id="settings-close" class="settings-close" type="button" aria-label="Cerrar"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="settings-body">
+        <section class="settings-section">
+          <h3>Apariencia</h3>
+          <div class="theme-row">
+            <div class="theme-info">
+              <i class="fa-solid fa-circle-half-stroke"></i>
+              <div>
+                <strong>Modo de interfaz</strong>
+                <span>Alterna entre claro y oscuro</span>
+              </div>
+            </div>
+            <button id="theme-toggle" class="theme-switch" type="button" role="switch" aria-checked="false" aria-label="Cambiar tema">
+              <span class="theme-track"><i class="fa-solid fa-sun"></i><span class="theme-thumb"></span><i class="fa-solid fa-moon"></i></span>
+            </button>
+          </div>
+        </section>
+        <section class="settings-section">
+          <h3>Cuenta</h3>
+          <div class="account-card">
+            <div class="account-avatar"><i class="fa-solid fa-user"></i></div>
+            <div class="account-info">
+              <strong id="settings-user-name">Invitado</strong>
+              <span id="settings-user-email">No has iniciado sesión</span>
+              <span id="settings-user-role" class="tag cyan"></span>
+            </div>
+          </div>
+          <button id="settings-account-btn" class="btn btn-secondary action-btn" type="button">
+            <i class="fa-solid fa-right-to-bracket"></i> Iniciar sesión
+          </button>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

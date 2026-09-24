@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Green AI | Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <script>try{if(localStorage.getItem('greenai-theme')==='light'){document.documentElement.classList.add('light-mode');}}catch(e){}</script>
+</head>
+<body class="auth-page page-shell">
+  <div class="auth-shell">
+    <div class="auth-panel glass-panel">
+      <div class="auth-topbar">
+        <div class="auth-brand"><i class="fa-solid fa-leaf neon-icon"></i> Green AI</div>
+        <div class="auth-topbar-actions">
+          <button id="theme-toggle" class="theme-switch" type="button" role="switch" aria-checked="false" aria-label="Cambiar tema">
+            <span class="theme-track"><i class="fa-solid fa-sun"></i><span class="theme-thumb"></span><i class="fa-solid fa-moon"></i></span>
+          </button>
+          <a href="index.html" class="auth-link"><i class="fa-solid fa-arrow-left"></i> Volver</a>
+        </div>
+      </div>
+
+      <div class="auth-header">
+        <h1>Iniciar Sesión</h1>
+        <p>Accede al panel de telemetría y gestión del clúster.</p>
+      </div>
+
+      <form id="login-form" novalidate>
+        <div class="form-grid">
+          <div class="input-group">
+            <i class="fa-solid fa-envelope"></i>
+            <input id="email" type="email" placeholder="Correo institucional" required />
+          </div>
+
+          <div class="input-group">
+            <i class="fa-solid fa-lock"></i>
+            <input id="password" type="password" placeholder="Contraseña" required />
+          </div>
+
+          <button class="btn btn-primary submit-btn" type="submit">
+            <i class="fa-solid fa-right-to-bracket"></i> Entrar al sistema
+          </button>
+        </div>
+      </form>
+
+      <div id="message" class="message-box" aria-live="polite"></div>
+
+      <div class="form-footer">
+        ¿No tienes cuenta? <a href="register.html">Crear usuario</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

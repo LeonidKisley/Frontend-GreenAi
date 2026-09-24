@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Green AI | Network Topology</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <script>try{if(localStorage.getItem('greenai-theme')==='light'){document.documentElement.classList.add('light-mode');}}catch(e){}</script>
+</head>
+<body class="network-page page-shell">
+  <header class="topbar glass-panel">
+    <div class="brand-group">
+      <div class="brand-mark"><i class="fa-solid fa-network-wired neon-icon"></i></div>
+      <div class="brand-name">Green AI <span>Topology</span></div>
+      <span class="brand-badge"><i class="fa-solid fa-shield-heart"></i> Core mesh</span>
+    </div>
+
+    <div class="topbar-actions">
+      <span class="cluster-pill"><i class="fa-solid fa-circle-dot fa-beat-fade"></i> Cluster online</span>
+      <span class="user-pill"><i class="fa-solid fa-user"></i> <span id="user-name-display">Usuario</span></span>
+      <span id="live-clock" class="clock mono">--:--:--</span>
+      <button id="settings-btn" class="icon-btn settings-btn" type="button" aria-label="Configuración" title="Configuración"><i class="fa-solid fa-gear"></i></button>
+      <a href="dashboard.html" class="btn btn-secondary"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+    </div>
+  </header>
+
+  <main class="network-shell">
+    <div class="network-layout">
+      <section class="visual-panel glass-panel">
+        <div class="panel-head">
+          <h2>Infraestructura de red</h2>
+          <span class="panel-chip">Kubernetes core</span>
+        </div>
+
+        <div class="network-toolbar">
+          <div class="view-toggle" role="tablist" aria-label="Selector de vista">
+            <button type="button" class="view-toggle-btn active" data-view-toggle="logical" aria-pressed="true">Vista Lógica</button>
+            <button type="button" class="view-toggle-btn" data-view-toggle="physical" aria-pressed="false">Vista Física</button>
+          </div>
+
+          <div class="carousel-toolbar">
+            <div class="carousel-stats" aria-label="Estadísticas del carrusel">
+              <div class="stat-item"><span>Bloque</span><strong id="carousel-block">1/--</strong></div>
+              <div class="stat-item"><span>En pantalla</span><strong id="carousel-visible">--</strong></div>
+              <div class="stat-item"><span>Servidores</span><strong id="carousel-total">--</strong></div>
+            </div>
+
+            <div class="carousel-controls" role="toolbar" aria-label="Controles del carrusel">
+              <button id="carousel-first" class="ctrl-btn" type="button" title="Primer bloque" aria-label="Primer bloque"><i class="fa-solid fa-backward-step"></i></button>
+              <button id="carousel-prev" class="ctrl-btn" type="button" title="Bloque anterior" aria-label="Bloque anterior"><i class="fa-solid fa-chevron-left"></i></button>
+              <button id="carousel-pause" class="ctrl-btn active" type="button" title="Pausar" aria-label="Pausar"><i class="fa-solid fa-pause"></i></button>
+              <button id="carousel-next" class="ctrl-btn" type="button" title="Siguiente bloque" aria-label="Siguiente bloque"><i class="fa-solid fa-chevron-right"></i></button>
+              <button id="carousel-last" class="ctrl-btn" type="button" title="Último bloque" aria-label="Último bloque"><i class="fa-solid fa-forward-step"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <div id="network-logic-panel" class="network-panel active">
+          <div class="network-canvas">
+            <svg class="network-svg" viewBox="0 0 1000 760" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="networkGradient" x1="0%" x2="100%" y1="0%" y2="0%">
+                  <stop offset="0%" stop-color="#22D3EE" />
+                  <stop offset="50%" stop-color="#A855F7" />
+                  <stop offset="100%" stop-color="#10B981" />
+                </linearGradient>
+                <linearGradient id="networkGradientAlt" x1="0%" x2="100%" y1="0%" y2="0%">
+                  <stop offset="0%" stop-color="#10B981" />
+                  <stop offset="50%" stop-color="#06B6D4" />
+                  <stop offset="100%" stop-color="#A855F7" />
+                </linearGradient>
+                <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                  <feMerge>
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+              </defs>
+
+              <!-- Líneas de tráfico dinámicas que se conectan al carrusel -->
+              <g id="traffic-lines"></g>
+            </svg>
+
+            <div class="switch-core">
+              <div class="switch-label"><i class="fa-solid fa-cube"></i> Switch core</div>
+              <div class="switch-name">SWITCH CORE K8s</div>
+              <div class="switch-band"></div>
+            </div>
+
+            <!-- Carrusel de servidores -->
+            <div class="carousel-container">
+              <div id="carousel-servers" class="carousel-content" aria-live="polite" aria-label="Carrusel de servidores"></div>
+              
+              <!-- Barra de progreso con puntos -->
+              <div class="carousel-progress">
+                <div id="progress-dots" class="progress-dots"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="network-physical-panel" class="network-panel">
+          <div class="physical-rack-wrap physical-room" aria-label="Sala de servidores física">
+            <div class="rack-status-row">
+              <span><i class="fa-solid fa-circle"></i> <strong id="physical-rack-total">50</strong> nodos físicos</span>
+              <span><i class="fa-solid fa-bolt"></i> Racks A · B · C · D · E</span>
+              <span><i class="fa-solid fa-server"></i> Mapeo 1:1 con vista lógica</span>
+            </div>
+            <div id="physical-rack" class="physical-rack"></div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="legend-panel glass-panel">
+        <div class="panel-head">
+          <h2>Estado de red</h2>
+          <span class="panel-chip">Live</span>
+        </div>
+
+        <div class="summary-list">
+          <div class="summary-item">
+            <span>Nodes activos</span>
+            <strong id="network-nodes">--</strong>
+          </div>
+          <div class="summary-item">
+            <span>Consumo energía</span>
+            <strong id="network-traffic">-- W</strong>
+          </div>
+          <div class="summary-item">
+            <span>Latencia promedio</span>
+            <strong id="network-latency">-- ms</strong>
+          </div>
+        </div>
+
+        <div class="panel-head" style="margin-top: 12px;">
+          <h2>Últimos eventos</h2>
+          <span class="panel-chip" style="font-size: 0.75rem;">Actividad en tiempo real</span>
+        </div>
+        <div class="event-info-note">
+          <i class="fa-solid fa-circle-info"></i>
+          <p><strong>¿Qué ves aquí?</strong> Cada evento registra cambios críticos en los servidores: incrementos de temperatura, cambios de carga CPU/RAM, alertas de energía y transiciones de estado.</p>
+        </div>
+        <ul id="network-log-feed" class="log-feed"></ul>
+      </aside>
+    </div>
+  </main>
+
+  <div id="settings-modal" class="modal-overlay" hidden>
+    <div class="settings-modal glass-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <div class="settings-head">
+        <div class="settings-title"><i class="fa-solid fa-gear"></i> <span id="settings-title">Configuración</span></div>
+        <button id="settings-close" class="settings-close" type="button" aria-label="Cerrar"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="settings-body">
+        <section class="settings-section">
+          <h3>Apariencia</h3>
+          <div class="theme-row">
+            <div class="theme-info">
+              <i class="fa-solid fa-circle-half-stroke"></i>
+              <div>
+                <strong>Modo de interfaz</strong>
+                <span>Alterna entre claro y oscuro</span>
+              </div>
+            </div>
+            <button id="theme-toggle" class="theme-switch" type="button" role="switch" aria-checked="false" aria-label="Cambiar tema">
+              <span class="theme-track"><i class="fa-solid fa-sun"></i><span class="theme-thumb"></span><i class="fa-solid fa-moon"></i></span>
+            </button>
+          </div>
+        </section>
+        <section class="settings-section">
+          <h3>Cuenta</h3>
+          <div class="account-card">
+            <div class="account-avatar"><i class="fa-solid fa-user"></i></div>
+            <div class="account-info">
+              <strong id="settings-user-name">Invitado</strong>
+              <span id="settings-user-email">No has iniciado sesión</span>
+              <span id="settings-user-role" class="tag cyan"></span>
+            </div>
+          </div>
+          <button id="settings-account-btn" class="btn btn-secondary action-btn" type="button">
+            <i class="fa-solid fa-right-to-bracket"></i> Iniciar sesión
+          </button>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div id="blade-tooltip" class="blade-tooltip" role="tooltip" hidden></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
