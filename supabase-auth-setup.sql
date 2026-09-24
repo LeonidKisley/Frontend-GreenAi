@@ -92,7 +92,7 @@ begin
     '{user_role}',
     to_jsonb(coalesce(assigned_role, 'OPERATOR'::public.app_role))
   );
-  return jsonb_set(event, '{claims}', claims);
+  return jsonb_build_object('claims', claims);
 end;
 $$;
 

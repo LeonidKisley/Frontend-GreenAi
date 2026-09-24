@@ -35,7 +35,7 @@ Frontend/
 El Frontend usa Supabase Auth con email/contraseña y flujo PKCE. Supabase administra la sesión y renueva el access token; cada solicitud al Gateway incluye `Authorization: Bearer <JWT>`. El rol de aplicación se lee del claim `user_role` y solo se usa para presentación: Gateway debe validar el JWT y aplicar los permisos.
 
 1. Ejecutar `supabase-auth-setup.sql` en Supabase SQL Editor.
-2. Activar `public.custom_access_token_hook` en **Authentication → Hooks → Custom Access Token**.
+2. Para roles personalizados, después de ejecutar el SQL, abrir **Authentication → Hooks**, seleccionar **Custom Access Token**, elegir el tipo **Postgres** y la función `public.custom_access_token_hook`. La ruta directa tiene la forma `https://supabase.com/dashboard/project/<project-ref>/auth/hooks`. Si la función todavía no existe o su firma no es `(event jsonb) returns jsonb`, no aparecerá en el selector. Este paso puede posponerse mientras todos los usuarios sean `OPERATOR`: Supabase seguirá emitiendo JWT estándar y el Frontend usará ese rol visual por defecto.
 3. Configurar Site URL y Redirect URLs para la dirección del Frontend.
 4. Copiar `config.example.js` como `config.local.js` y completar la Project URL, publishable key y URL del Gateway.
 
