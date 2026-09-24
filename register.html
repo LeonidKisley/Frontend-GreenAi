@@ -4,292 +4,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Green AI | Registro</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23059669' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z'/><path d='M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12'/></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="styles.css" />
-  <style>
-        body {
-            background-color: #0f172a;
-            color: #f8fafc;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 500px;
-        }
-
-        .navbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .navbar a {
-            color: #94a3b8;
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-
-        .navbar a:hover { color: #10b981; }
-
-        .card {
-            background-color: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-
-        .card-header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .card-header h2 {
-            margin: 0 0 5px 0;
-            font-size: 1.5rem;
-            color: #ffffff;
-        }
-
-        .card-header p {
-            margin: 0;
-            color: #94a3b8;
-            font-size: 0.85rem;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: #cbd5e1;
-        }
-
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 10px 12px;
-            background-color: #0f172a;
-            border: 1px solid #334155;
-            border-radius: 6px;
-            color: #ffffff;
-            font-size: 0.95rem;
-            box-sizing: border-box;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #10b981;
-        }
-
-        .form-group input[readonly] {
-            background-color: #1a2332;
-            color: #64748b;
-            cursor: not-allowed;
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 12px;
-            background-color: #10b981;
-            color: #ffffff;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: background 0.2s;
-        }
-
-        .btn-submit:hover {
-            background-color: #059669;
-        }
-
-        #message {
-            margin-top: 15px;
-            text-align: center;
-            font-size: 0.85rem;
-        }
-
-        /* Estilos adicionales para el diseño solicitado */
-        .auth-page {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #0f172a;
-            margin: 0;
-            padding: 0;
-        }
-
-        .auth-shell {
-            width: 100%;
-            max-width: 400px;
-            padding: 20px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .auth-panel {
-            background-color: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-
-        .auth-topbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .auth-brand {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #10b981;
-        }
-
-        .auth-link {
-            color: #94a3b8;
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-
-        .auth-link:hover {
-            color: #10b981;
-        }
-
-        .auth-header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        .auth-header h1 {
-            margin: 0 0 10px 0;
-            font-size: 1.8rem;
-            color: #ffffff;
-        }
-
-        .auth-header p {
-            margin: 0;
-            color: #94a3b8;
-            font-size: 0.9rem;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-        }
-
-        .input-group {
-            position: relative;
-            width: 100%;
-        }
-
-        .input-group i {
-            position: absolute;
-            top: 12px;
-            left: 10px;
-            color: #94a3b8;
-            font-size: 1.2rem;
-        }
-
-        .input-group input {
-            padding-left: 40px;
-        }
-
-        .password-strength {
-            margin-top: 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .strength-meter {
-            flex: 1;
-            height: 4px;
-            background-color: #334155;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-right: 10px;
-        }
-
-        .strength-fill {
-            height: 100%;
-            background-color: #10b981;
-            width: 0;
-            transition: width 0.3s;
-        }
-
-        .strength-text {
-            color: #94a3b8;
-            font-size: 0.85rem;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 12px;
-            background-color: #10b981;
-            color: #ffffff;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .btn-primary:hover {
-            background-color: #059669;
-        }
-
-        .message-box {
-            margin-top: 15px;
-            text-align: center;
-            font-size: 0.85rem;
-        }
-
-        .form-footer {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 0.85rem;
-        }
-
-        .form-footer a {
-            color: #10b981;
-            text-decoration: none;
-        }
-
-        .form-footer a:hover {
-            text-decoration: underline;
-        }
-    </style>
+  <script>try{if(localStorage.getItem('greenai-theme')==='light'){document.documentElement.classList.add('light-mode');}}catch(e){}</script>
 </head>
 <body class="auth-page page-shell">
   <div class="auth-shell">
     <div class="auth-panel glass-panel">
       <div class="auth-topbar">
         <div class="auth-brand"><i class="fa-solid fa-user-gear neon-icon"></i> Green AI</div>
-        <a href="index.html" class="auth-link"><i class="fa-solid fa-arrow-left"></i> Volver</a>
+        <div class="auth-topbar-actions">
+          <button id="theme-toggle" class="theme-switch" type="button" role="switch" aria-checked="false" aria-label="Cambiar tema">
+            <span class="theme-track"><i class="fa-solid fa-sun"></i><span class="theme-thumb"></span><i class="fa-solid fa-moon"></i></span>
+          </button>
+          <a href="index.html" class="auth-link"><i class="fa-solid fa-arrow-left"></i> Volver</a>
+        </div>
       </div>
 
       <div class="auth-header">
@@ -319,10 +52,7 @@
             <input id="confirm_password" type="password" placeholder="Confirmar contraseña" required />
           </div>
 
-          <div class="input-group">
-            <i class="fa-solid fa-sitemap"></i>
-            <p>La cuenta se registrará como operador.</p>
-          </div>
+          <p>Tu cuenta recibirá los permisos asignados por el sistema.</p>
 
           <button class="btn btn-primary submit-btn" type="submit">
             <i class="fa-solid fa-user-plus"></i> Registrar operador
@@ -340,6 +70,7 @@
 
   <script src="config.local.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.1"></script>
+  <script src="appearance.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

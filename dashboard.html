@@ -2,9 +2,9 @@
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Green AI | Monitoring</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="monitoring.css">
 </head><body class="dashboard-page page-shell">
-<header class="topbar glass-panel"><div class="brand-name">Green AI <span>Monitoring</span></div>
+<header class="topbar glass-panel"><div class="brand-group"><div class="brand-name">Green AI <span>Monitoring</span></div><span class="brand-badge">Infraestructura</span></div>
 <div class="topbar-actions"><span id="user-name-display"></span><span id="user-role-badge" class="role-pill"></span>
-<a href="network.html" class="btn btn-secondary">Topología</a><button id="logout-btn" class="btn btn-secondary">Cerrar sesión</button></div></header>
+<button id="theme-toggle" class="btn btn-secondary" type="button" role="switch" aria-checked="false" aria-label="Modo claro">Modo oscuro</button><a href="network.html" class="btn btn-secondary">Topología</a><button id="logout-btn" class="btn btn-secondary">Cerrar sesión</button></div></header>
 <main class="dashboard-shell">
 <section class="glass-panel monitor-panel"><h1>Métricas de infraestructura</h1>
 <p>CPU, memoria, red y almacenamiento por nodo. La procedencia indica si los datos son simulados u observados.</p>
@@ -19,4 +19,4 @@
 <article class="glass-panel monitor-panel"><span class="pending">Próximamente</span><h2>Potencia y energía</h2><p>En desarrollo · todavía no hay una fuente de W o kWh en Monitoring.</p></article><article class="glass-panel monitor-panel"><span class="pending">Próximamente</span><h2>Predicciones y ahorro</h2><p>En desarrollo · pendiente del servicio Prediction y de sus contratos.</p></article><article class="glass-panel monitor-panel"><span class="pending">Próximamente</span><h2>Inventario y operadores</h2><p>En desarrollo · pendiente de una API de administración autorizada.</p></article></section></main>
 <script src="config.local.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.1"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
-<script src="metrics.js"></script><script src="monitoring.js"></script><script src="app.js"></script></body></html>
+<script src="appearance.js"></script><script src="metrics.js"></script><script src="monitoring.js"></script><script src="app.js"></script></body></html>
