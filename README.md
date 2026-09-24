@@ -30,19 +30,27 @@ Frontend/
 └── .gitignore
 ```
 
+## Autenticación con Supabase
+
+El Frontend usa Supabase Auth con email/contraseña y flujo PKCE. Supabase administra la sesión y renueva el access token; cada solicitud al Gateway incluye `Authorization: Bearer <JWT>`. El rol de aplicación se lee del claim `user_role` y solo se usa para presentación: Gateway debe validar el JWT y aplicar los permisos.
+
+1. Ejecutar `supabase-auth-setup.sql` en Supabase SQL Editor.
+2. Activar `public.custom_access_token_hook` en **Authentication → Hooks → Custom Access Token**.
+3. Configurar Site URL y Redirect URLs para la dirección del Frontend.
+4. Copiar `config.example.js` como `config.local.js` y completar la Project URL, publishable key y URL del Gateway.
+
+`config.local.js` está ignorado por Git. La publishable key es la única clave de Supabase permitida en el navegador; nunca usar `service_role`, JWT secret ni claves privadas.
+
+Los registros siempre reciben `OPERATOR`. El Frontend no envía ni decide el rol. Para promover una cuenta a `ADMIN`, usar la consulta administrativa incluida al final del script SQL y hacer que el usuario cierre sesión y vuelva a entrar para recibir un JWT nuevo.
+
 ## Endpoint de API
 
-`app.js` define `API_URL` de forma dinámica:
-
-- Si la página se abre por `file://` o sin origen, usa `http://localhost:3001/api`.
-- Si se sirve por HTTP, usa `${window.location.origin}/api`.
+`app.js` obtiene `gatewayBaseUrl` desde `config.local.js` y añade `/api`. Por defecto usa `http://127.0.0.1:8081`.
 
 Endpoints consumidos:
 
 | Método | Ruta | Uso |
 | --- | --- | --- |
-| POST | `/api/login` | Iniciar sesión; guarda `usuarioLogueado` en `localStorage`. |
-| POST | `/api/registro` | Crear operador; guarda la sesión y redirige al dashboard. |
 | GET | `/api/kpis` | Tarjetas: nodos activos, watts totales, CPU y RAM promedio. |
 | GET | `/api/hardware` | Tabla de hardware y servidores del clúster. |
 | GET | `/api/logs` | Logs de telemetría, gráficos y consumo mensual. |
@@ -50,10 +58,10 @@ Endpoints consumidos:
 
 ## Sesión y roles
 
-- La sesión se guarda en `localStorage` bajo la clave `usuarioLogueado`.
-- `dashboard.html` y `network.html` redirigen a `login.html` si no hay sesión válida (`checkAuthSession`).
+- Supabase Auth administra la persistencia y renovación de la sesión; la aplicación no crea un objeto de identidad propio.
+- `dashboard.html` y `network.html` redirigen a `login.html` si Supabase no devuelve una sesión.
 - Los elementos con `data-admin-only="true"` (p. ej. tabla de operadores) se ocultan para el rol `OPERATOR`.
-- El botón "Cerrar sesión" elimina la clave y vuelve al login.
+- El botón "Cerrar sesión" invalida la sesión de Supabase y vuelve al login.
 
 ## Ejecutar
 

@@ -1,13 +1,71 @@
 // ==================================================================
-// CONFIGURACIÓN DEL ENDPOINT BACKEND
+// CONFIGURACIÓN DE SUPABASE AUTH Y GATEWAY
 // ==================================================================
-const API_URL = (() => {
-  const origin = window.location.origin;
-  if (!origin || origin === 'null' || origin === 'file://') {
-    return 'http://localhost:3001/api';
+const GREEN_AI_CONFIG = window.GREEN_AI_CONFIG || {};
+const GATEWAY_BASE_URL = String(GREEN_AI_CONFIG.gatewayBaseUrl || 'http://127.0.0.1:8081').replace(/\/$/, '');
+const API_URL = `${GATEWAY_BASE_URL}/api`;
+
+let supabaseClient = null;
+let activeAuthSession = null;
+
+function getSupabaseClient() {
+  if (supabaseClient) return supabaseClient;
+  const { supabaseUrl, supabasePublishableKey } = GREEN_AI_CONFIG;
+  if (!supabaseUrl || !supabasePublishableKey || !window.supabase?.createClient) {
+    throw new Error('Supabase Auth no está configurado. Copia config.example.js como config.local.js y completa sus valores.');
   }
-  return `${origin}/api`;
-})();
+  supabaseClient = window.supabase.createClient(supabaseUrl, supabasePublishableKey, {
+    auth: { flowType: 'pkce', autoRefreshToken: true, persistSession: true, detectSessionInUrl: true }
+  });
+  return supabaseClient;
+}
+
+function decodeJwtClaims(accessToken) {
+  try {
+    const encoded = accessToken.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+    const payload = encoded.padEnd(Math.ceil(encoded.length / 4) * 4, '=');
+    return JSON.parse(decodeURIComponent(atob(payload).split('').map((char) =>
+      `%${char.charCodeAt(0).toString(16).padStart(2, '0')}`
+    ).join('')));
+  } catch (_error) {
+    return {};
+  }
+}
+
+function sessionUserView(session) {
+  const user = session?.user;
+  if (!user) return null;
+  const claims = decodeJwtClaims(session.access_token || '');
+  return {
+    nombre_completo: user.user_metadata?.full_name || user.email?.split('@')[0] || 'Operador',
+    email: user.email,
+    role: String(claims.user_role || 'OPERATOR').toUpperCase()
+  };
+}
+
+async function getAuthSession() {
+  const { data, error } = await getSupabaseClient().auth.getSession();
+  if (error) throw error;
+  activeAuthSession = data.session;
+  return activeAuthSession;
+}
+
+async function authenticatedFetch(url, options = {}) {
+  const session = await getAuthSession();
+  if (!session?.access_token) {
+    window.location.href = 'login.html';
+    throw new Error('La sesión expiró. Inicia sesión nuevamente.');
+  }
+  const headers = new Headers(options.headers || {});
+  headers.set('Authorization', `Bearer ${session.access_token}`);
+  headers.set('Accept', 'application/json');
+  const response = await fetch(url, { ...options, headers });
+  if (response.status === 401) {
+    await getSupabaseClient().auth.signOut({ scope: 'local' });
+    window.location.href = 'login.html';
+  }
+  return response;
+}
 
 function updateClock() {
   const clock = document.getElementById('live-clock');
@@ -32,18 +90,17 @@ function bindThemeToggle() {
   }
 }
 
-function renderUserProfile() {
-  const userRaw = localStorage.getItem('usuarioLogueado');
-  if (!userRaw) return;
+function renderUserProfile(session = activeAuthSession) {
+  const user = sessionUserView(session);
+  if (!user) return;
 
   try {
-    const user = JSON.parse(userRaw);
     const display = document.getElementById('user-name-display');
     const roleBadge = document.getElementById('user-role-badge');
     const settingsName = document.getElementById('settings-user-name');
     const settingsEmail = document.getElementById('settings-user-email');
     const settingsRole = document.getElementById('settings-user-role');
-    const normalizedRole = String(user?.rol || user?.role || 'OPERATOR').trim().toUpperCase();
+    const normalizedRole = String(user.role || 'OPERATOR').trim().toUpperCase();
     const formattedRole = normalizedRole === 'OPERADOR' ? 'OPERATOR' : normalizedRole;
     const isOperator = formattedRole === 'OPERATOR';
 
@@ -115,24 +172,13 @@ function isProtectedPage() {
   return path.endsWith('/dashboard.html') || path.endsWith('/network.html');
 }
 
-function checkAuthSession() {
-  const userRaw = localStorage.getItem('usuarioLogueado');
-  if (!userRaw) {
-    if (isProtectedPage()) {
-      window.location.href = 'login.html';
-    }
-    return null;
-  }
-
+async function checkAuthSession() {
   try {
-    const parsed = JSON.parse(userRaw);
-    if (!parsed || !parsed.email) {
-      throw new Error('Usuario inválido');
-    }
-    return parsed;
+    const session = await getAuthSession();
+    if (!session && isProtectedPage()) window.location.href = 'login.html';
+    return session;
   } catch (error) {
-    console.error('Error leyendo sesión:', error);
-    localStorage.removeItem('usuarioLogueado');
+    console.error('Error iniciando Supabase Auth:', error);
     if (isProtectedPage()) {
       window.location.href = 'login.html';
     }
@@ -144,14 +190,14 @@ function setupLogoutButton() {
   const logoutBtn = document.getElementById('logout-btn');
   if (!logoutBtn) return;
 
-  logoutBtn.addEventListener('click', () => {
-    localStorage.removeItem('usuarioLogueado');
+  logoutBtn.addEventListener('click', async () => {
+    await getSupabaseClient().auth.signOut();
     window.location.href = 'login.html';
   });
 }
 
-function bindPublicNavState() {
-  const isLogged = Boolean(localStorage.getItem('usuarioLogueado'));
+function bindPublicNavState(session) {
+  const isLogged = Boolean(session);
   const dashboardLink = document.querySelector('a[href="dashboard.html"]');
   const loginLink = document.querySelector('a[href="login.html"]');
   const registerLink = document.querySelector('a[href="register.html"]');
@@ -294,7 +340,7 @@ function updateChartColors(textColor, gridColor) {
 
 async function loadKPIs() {
   try {
-    const res = await fetch(`${API_URL}/kpis`);
+    const res = await authenticatedFetch(`${API_URL}/kpis`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
 
@@ -326,7 +372,7 @@ async function loadUsuariosTable() {
     const tbody = document.getElementById('usuarios-table-body');
     if (!tbody) return;
 
-    const res = await fetch(`${API_URL}/usuarios`);
+    const res = await authenticatedFetch(`${API_URL}/usuarios`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
 
@@ -349,7 +395,7 @@ async function loadHardwareTable() {
     const tbody = document.getElementById('hardware-table-body');
     if (!tbody) return;
 
-    const res = await fetch(`${API_URL}/hardware`);
+    const res = await authenticatedFetch(`${API_URL}/hardware`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
 
@@ -373,7 +419,7 @@ async function loadMonthlyEnergy() {
   if (!monthlyEnergyChart) return;
 
   try {
-    const res = await fetch(`${API_URL}/logs`);
+    const res = await authenticatedFetch(`${API_URL}/logs`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
 
@@ -391,7 +437,7 @@ async function loadMonthlyEnergy() {
 
 async function loadLogsAndCharts() {
   try {
-    const res = await fetch(`${API_URL}/logs`);
+    const res = await authenticatedFetch(`${API_URL}/logs`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
 
@@ -455,17 +501,8 @@ async function setupLoginForm() {
     }
 
     try {
-      const res = await fetch(`${API_URL}/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.detail || 'Error al iniciar sesión.');
-
-      const usuario = data.usuario || { nombre_completo: 'Usuario' };
-      localStorage.setItem('usuarioLogueado', JSON.stringify(usuario));
+      const { error } = await getSupabaseClient().auth.signInWithPassword({ email, password });
+      if (error) throw error;
       setMessage('message', '¡Bienvenido! Redirigiendo...');
       setTimeout(() => { window.location.href = 'dashboard.html'; }, 1200);
     } catch (error) {
@@ -487,8 +524,6 @@ async function setupRegisterForm() {
     const email = document.getElementById('email')?.value.trim();
     const password = document.getElementById('password')?.value;
     const confirmPassword = document.getElementById('confirm_password')?.value;
-    const rol = document.getElementById('rol')?.value || 'OPERADOR';
-
     if (!nombre || !email || !password || !confirmPassword) {
       setMessage('message', 'Completa todos los campos.', true);
       return;
@@ -507,21 +542,24 @@ async function setupRegisterForm() {
     }
 
     try {
-      const res = await fetch(`${API_URL}/registro`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre_completo: nombre, email, password, rol })
+      const emailRedirectTo = new URL('login.html', window.location.href).href;
+      const { data, error } = await getSupabaseClient().auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo,
+          data: { full_name: nombre }
+        }
       });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.detail || 'Error al registrar usuario.');
-
-      const usuario = (data && data.data && data.data[0]) || { nombre_completo: nombre, email, rol };
-      localStorage.setItem('usuarioLogueado', JSON.stringify(usuario));
-      setMessage('message', '¡Registro exitoso! Redirigiendo...');
+      if (error) throw error;
       form.reset();
-      
-      setTimeout(() => { window.location.href = 'dashboard.html'; }, 1500);
+
+      if (data.session) {
+        setMessage('message', '¡Registro exitoso! Redirigiendo...');
+        setTimeout(() => { window.location.href = 'dashboard.html'; }, 1500);
+      } else {
+        setMessage('message', 'Revisa tu correo y confirma la cuenta antes de iniciar sesión.');
+      }
     } catch (error) {
       setMessage('message', error.message || 'Error de conexión.', true);
 
@@ -902,8 +940,8 @@ function toggleNetworkView(viewName) {
 async function loadNetworkData() {
   try {
     const [hardwareRes, logsRes] = await Promise.all([
-      fetch(`${API_URL}/hardware`),
-      fetch(`${API_URL}/logs`)
+      authenticatedFetch(`${API_URL}/hardware`),
+      authenticatedFetch(`${API_URL}/logs`)
     ]);
 
     const hardwarePayload = hardwareRes.ok ? await hardwareRes.json() : [];
@@ -1223,9 +1261,10 @@ function bindServerCarouselControls() {
   startServerAutoplay();
 }
 
-function initializeDashboard() {
-  checkAuthSession();
-  renderUserProfile();
+async function initializeDashboard() {
+  const session = await checkAuthSession();
+  if (!session) return;
+  renderUserProfile(session);
   initializeCharts();
   loadKPIs();
   loadUsuariosTable();
@@ -1239,9 +1278,10 @@ function initializeDashboard() {
   }, 10000);
 }
 
-function initializeNetworkPage() {
-  checkAuthSession();
-  renderUserProfile();
+async function initializeNetworkPage() {
+  const session = await checkAuthSession();
+  if (!session) return;
+  renderUserProfile(session);
   bindServerCarouselControls();
   loadNetworkData();
   const viewButtons = document.querySelectorAll('[data-view-toggle]');
@@ -1253,23 +1293,36 @@ function initializeNetworkPage() {
   setInterval(loadNetworkData, 10000);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   updateClock();
   setInterval(updateClock, 1000);
   bindThemeToggle();
-  renderUserProfile();
   setupPasswordStrength();
   setupLogoutButton();
   setupLoginForm();
   setupRegisterForm();
-  bindPublicNavState();
   bindSettingsModal();
 
+  let session = null;
+  try {
+    session = await getAuthSession();
+    getSupabaseClient().auth.onAuthStateChange((_event, nextSession) => {
+      activeAuthSession = nextSession;
+      renderUserProfile(nextSession);
+      bindPublicNavState(nextSession);
+    });
+  } catch (error) {
+    console.error(error.message);
+    setMessage('message', error.message, true);
+  }
+  renderUserProfile(session);
+  bindPublicNavState(session);
+
   if (document.getElementById('wattsChart') || document.getElementById('resourcesChart') || document.getElementById('monthlyEnergyChart')) {
-    initializeDashboard();
+    await initializeDashboard();
   }
 
   if (document.getElementById('hardware-cards') || document.getElementById('physical-rack')) {
-    initializeNetworkPage();
+    await initializeNetworkPage();
   }
 });
