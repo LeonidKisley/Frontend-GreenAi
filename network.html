@@ -18,8 +18,8 @@
 <article class="architecture-step"><span class="eyebrow">04 · Acceso</span><strong>Gateway → Frontend</strong><p>El usuario consulta mediante Gateway con su sesión de Supabase Auth.</p></article>
 </div><p>Las métricas sintéticas se identifican como <strong>Simulado</strong>. Una muestra ausente aparece como «Sin dato» y no como cero.</p>
 <p id="request-status" role="status"></p></section>
-<section class="glass-panel monitor-panel"><span class="pending">MVP 1 · Integración pendiente en el panel</span>
-<h2>Preparación e inferencia</h2><p>Data Processing consulta Monitoring y prepara un dataset de CPU. Prediction recibe ese dataset para estimar demanda futura. Sus APIs existen; falta cerrar y comprobar la operación completa hasta el Frontend.</p>
+<section class="glass-panel monitor-panel"><span class="brand-badge">MVP 1 · Inferencia experimental</span>
+<h2>Preparación e inferencia</h2><p>Al solicitar una estimación en el panel, Data Processing consulta Monitoring y prepara el histórico de un nodo. El panel envía ese dataset a Prediction por Gateway y presenta la CPU estimada, su horizonte y modelo. La demostración utiliza un modelo entrenado con datos sintéticos; no representa ahorro energético validado.</p>
 <p>La lectura histórica de Supabase requiere un acceso de servidor autorizado. No se confunde con las series sintéticas almacenadas en Prometheus.</p></section>
 <section class="glass-panel monitor-panel"><span class="pending">MVP 2 · Propuesta de avance</span>
 <h2>Vista lógica y física de infraestructura</h2><p>La idea de racks y conexiones del prototipo se reserva para una vista basada en inventario real. Primero se necesitan identificadores estables, ubicaciones y enlaces verificables.</p>

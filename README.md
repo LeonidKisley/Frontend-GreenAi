@@ -1,6 +1,6 @@
 # Green AI — Frontend
 
-Frontend estático con Supabase Auth y métricas de Monitoring a través de Gateway. El dashboard consulta catálogo, valores actuales e históricos. CPU se presenta como porcentaje; memoria como bytes escalados; red y filesystem mantienen sus series separadas. Se muestran procedencia, calidad, advertencias y periodo. Energía, predicciones, inventario y topología están marcados como «En desarrollo».
+Frontend estático con Supabase Auth, métricas de Monitoring y estimaciones experimentales de CPU a través de Gateway. CPU se presenta como porcentaje; memoria como bytes escalados; red y filesystem mantienen sus series separadas. Se muestran procedencia, calidad, advertencias y periodo. Energía, inventario y topología física siguen como propuestas futuras.
 
 ## Configurar Supabase
 
@@ -22,7 +22,15 @@ Desde el workspace: `docker compose up -d --build`. El compose monta `config.loc
 
 ## API y sesión
 
-Únicas rutas funcionales: GET `/api/monitoring/v1/metrics/catalog`, `current` e `history`. El Frontend no accede a tablas Supabase ni a microservicios internos. Auth es la única excepción para login, registro y renovación.
+Rutas funcionales: GET `/api/monitoring/v1/metrics/catalog`, `current` e `history`; GET `/api/processing/v1/prediction/dataset`; POST `/api/prediction/v1/predictions`. El Frontend no accede a tablas Supabase ni a microservicios internos. Auth es la única excepción para login, registro y renovación.
+
+## Estimación experimental de CPU
+
+1. Iniciar sesión y elegir un clúster y un nodo concretos.
+2. Pulsar «Estimar CPU del nodo seleccionado». El panel solicita hasta dos horas de CPU a Data Processing (paso 15 s) y envía ese JSON intacto a Prediction mediante Gateway. Esta ventana es independiente del selector del gráfico.
+3. Leer valor, recurso, instante estimado, horizonte, modelo, origen de entrada y advertencias. El modelo remuestrea cada 5 minutos y necesita al menos seis intervalos consecutivos para sus características actuales; puede requerir más datos si hay huecos.
+
+El modelo de la imagen se entrena con un fixture sintético; el resultado es una estimación experimental, no evidencia de ahorro energético. Una ventana insuficiente devuelve un mensaje explícito. El POST no se reintenta automáticamente: si vence la sesión, iniciar sesión y volver a solicitar. La estimación queda ligada al recurso mostrado aunque después cambien los filtros. No se ejecuta inferencia automática cada 15 segundos.
 
 El SDK conserva la sesión; `authenticatedFetch` adjunta Bearer exclusivamente al Gateway configurado. Ante 401 renueva una vez y reintenta GET. Un 403 muestra falta de permisos y no renueva. Gateway valida firma, issuer, audience, expiración y `user_role`. Decodificar el claim en la interfaz solo sirve para presentación.
 
