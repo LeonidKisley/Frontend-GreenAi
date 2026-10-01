@@ -1,4 +1,34 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Green AI | Topología</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="monitoring.css"></head>
-<body class="page-shell"><header class="topbar glass-panel"><div class="brand-name">Green AI</div><a href="dashboard.html" class="btn btn-secondary">Volver a métricas</a><button id="logout-btn" class="btn btn-secondary">Cerrar sesión</button></header>
-<main class="dashboard-shell"><section class="glass-panel monitor-panel"><span class="pending">En desarrollo</span><h1>Topología de infraestructura</h1><p>La vista de racks, conexiones y latencia estará disponible cuando exista un inventario y una fuente de topología. Puedes consultar el tráfico por interfaz en el dashboard.</p><p id="request-status" role="status"></p></section></main>
-<script src="appearance.js"></script><script src="config.local.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.1"></script><script src="app.js"></script></body></html>
+<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Green AI | Arquitectura y evolución</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="monitoring.css"></head>
+<body class="page-shell">
+<header class="topbar glass-panel"><div class="brand-name">Green AI <span>Arquitectura</span></div>
+<div class="topbar-actions"><span id="user-name-display"></span><span id="user-role-badge" class="role-pill"></span>
+<button id="theme-toggle" class="btn btn-secondary" type="button" role="switch" aria-checked="false" aria-label="Modo claro">Modo oscuro</button>
+<a href="dashboard.html" class="btn btn-secondary">Volver a métricas</a><button id="logout-btn" class="btn btn-secondary">Cerrar sesión</button></div></header>
+<main class="dashboard-shell">
+<section class="glass-panel monitor-panel"><span class="brand-badge">MVP 1 · Arquitectura de la demostración</span>
+<h1>Cómo llegan los datos al panel</h1>
+<p>Esquema explicativo de los servicios. No es un mapa de red descubierto ni un indicador de disponibilidad en tiempo real.</p>
+<div class="architecture-flow" aria-label="Recorrido de las métricas">
+<article class="architecture-step"><span class="eyebrow">01 · Generación</span><strong>Simulator</strong><p>Produce CPU, memoria, tráfico y filesystem sintéticos con una semilla reproducible.</p></article>
+<article class="architecture-step"><span class="eyebrow">02 · Recolección</span><strong>Prometheus</strong><p>Consulta el exporter y conserva las series temporales.</p></article>
+<article class="architecture-step"><span class="eyebrow">03 · Consulta</span><strong>Monitoring</strong><p>Consulta Prometheus y entrega valores, unidades, calidad y procedencia.</p></article>
+<article class="architecture-step"><span class="eyebrow">04 · Acceso</span><strong>Gateway → Frontend</strong><p>El usuario consulta mediante Gateway con su sesión de Supabase Auth.</p></article>
+</div><p>Las métricas sintéticas se identifican como <strong>Simulado</strong>. Una muestra ausente aparece como «Sin dato» y no como cero.</p>
+<p id="request-status" role="status"></p></section>
+<section class="glass-panel monitor-panel"><span class="pending">MVP 1 · Integración pendiente en el panel</span>
+<h2>Preparación e inferencia</h2><p>Data Processing consulta Monitoring y prepara un dataset de CPU. Prediction recibe ese dataset para estimar demanda futura. Sus APIs existen; falta cerrar y comprobar la operación completa hasta el Frontend.</p>
+<p>La lectura histórica de Supabase requiere un acceso de servidor autorizado. No se confunde con las series sintéticas almacenadas en Prometheus.</p></section>
+<section class="glass-panel monitor-panel"><span class="pending">MVP 2 · Propuesta de avance</span>
+<h2>Vista lógica y física de infraestructura</h2><p>La idea de racks y conexiones del prototipo se reserva para una vista basada en inventario real. Primero se necesitan identificadores estables, ubicaciones y enlaces verificables.</p>
+<div class="pending-grid">
+<article class="architecture-step"><strong>Inventario trazable</strong><p>Relacionar cada equipo con sus métricas y su ubicación sin inventar nodos.</p></article>
+<article class="architecture-step"><strong>Decisiones explicables</strong><p>Mostrar recomendaciones, restricciones de SLA y el motivo de cada propuesta.</p></article>
+<article class="architecture-step"><strong>Impacto energético</strong><p>Incorporar medición de potencia y comparar periodos antes de afirmar ahorro.</p></article>
+</div><p>Estos elementos describen la siguiente etapa propuesta; todavía no son funciones operativas ni compromisos de alcance aprobados.</p></section>
+</main>
+<script src="appearance.js"></script><script src="config.local.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.1"></script><script src="app.js"></script>
+</body></html>

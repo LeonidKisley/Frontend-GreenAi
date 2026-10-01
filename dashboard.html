@@ -2,21 +2,28 @@
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Green AI | Monitoring</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="monitoring.css">
 </head><body class="dashboard-page page-shell">
-<header class="topbar glass-panel"><div class="brand-group"><div class="brand-name">Green AI <span>Monitoring</span></div><span class="brand-badge">Infraestructura</span></div>
+<header class="topbar glass-panel"><div class="brand-group"><div class="brand-name">Green AI <span>Observatorio</span></div><span class="brand-badge">MVP 1 · Monitoreo</span></div>
 <div class="topbar-actions"><span id="user-name-display"></span><span id="user-role-badge" class="role-pill"></span>
 <button id="theme-toggle" class="btn btn-secondary" type="button" role="switch" aria-checked="false" aria-label="Modo claro">Modo oscuro</button><a href="network.html" class="btn btn-secondary">Topología</a><button id="logout-btn" class="btn btn-secondary">Cerrar sesión</button></div></header>
 <main class="dashboard-shell">
-<section class="glass-panel monitor-panel"><h1>Métricas de infraestructura</h1>
+<section class="glass-panel monitor-panel"><div class="eyebrow">Centro de operación</div><h1>Tu infraestructura, en contexto</h1>
 <p>CPU, memoria, red y almacenamiento por nodo. La procedencia indica si los datos son simulados u observados.</p>
 <div class="filters"><label>Métrica<select id="metric"></select></label><label>Clúster<select id="cluster"><option value="">Todos los clústeres</option></select></label>
 <label>Nodo<select id="node"><option value="">Todos los nodos</option></select></label><label>Histórico<select id="period"><option value="5">5 minutos</option><option value="15" selected>15 minutos</option><option value="60">1 hora</option></select></label>
 <button id="refresh" class="btn btn-primary">Actualizar</button></div>
 <p id="request-status" role="status" aria-live="polite">Conectando…</p><p id="metric-description"></p></section>
-<section class="table-card glass-panel"><h2>Valores actuales</h2><p id="current-status"></p><p id="warnings"></p>
+<section class="kpi-grid monitoring-summary" aria-label="Resumen de la consulta actual">
+<article class="kpi-card glass-panel"><span class="kpi-label">Nodos en la respuesta</span><strong class="summary-value" id="summary-nodes">—</strong><span class="summary-note">Identificados por clúster y nodo; no indica disponibilidad.</span></article>
+<article class="kpi-card glass-panel"><span class="kpi-label">Series con dato válido</span><strong class="summary-value" id="summary-valid">—</strong><span class="summary-note">Última muestra de cada serie consultada.</span></article>
+<article class="kpi-card glass-panel"><span class="kpi-label">Procedencia</span><strong class="summary-value summary-text" id="summary-origin">Sin consultar</strong><span class="summary-note">Simulado, observado o estimado según la fuente.</span></article>
+<article class="kpi-card glass-panel"><span class="kpi-label">Cobertura de la respuesta</span><strong class="summary-value summary-text" id="summary-quality">Sin consultar</strong><span class="summary-note">Cobertura de datos; no equivale a salud del sistema.</span></article>
+</section>
+<section class="chart-card glass-panel"><div class="chart-header"><h2>Evolución de la métrica</h2><span class="chart-sub">Histórico por serie</span></div><p id="history-status"></p><div class="monitor-chart"><canvas id="history-chart"></canvas></div></section>
+<section class="table-card glass-panel"><h2>Detalle por nodo</h2><p id="current-status"></p><p id="warnings"></p>
 <div class="table-wrapper"><table class="data-table"><thead><tr><th>Clúster</th><th>Nodo</th><th>Interfaz / filesystem</th><th>Valor</th><th>Procedencia</th><th>Calidad</th><th>Instante</th></tr></thead><tbody id="metric-rows"></tbody></table></div></section>
-<section class="chart-card glass-panel"><h2>Histórico</h2><p id="history-status"></p><div class="monitor-chart"><canvas id="history-chart"></canvas></div></section>
-<section class="pending-grid">
-<article class="glass-panel monitor-panel"><span class="pending">Próximamente</span><h2>Potencia y energía</h2><p>En desarrollo · todavía no hay una fuente de W o kWh en Monitoring.</p></article><article class="glass-panel monitor-panel"><span class="pending">Próximamente</span><h2>Predicciones y ahorro</h2><p>En desarrollo · pendiente del servicio Prediction y de sus contratos.</p></article><article class="glass-panel monitor-panel"><span class="pending">Próximamente</span><h2>Inventario y operadores</h2><p>En desarrollo · pendiente de una API de administración autorizada.</p></article></section></main>
+<section class="glass-panel monitor-panel delivery-note"><div><span class="pending">MVP 1 · Integración pendiente</span><h2>Del monitoreo a la predicción de CPU</h2><p>Data Processing prepara las muestras y Prediction dispone de una API. La inferencia todavía no está conectada a este panel. Aquí aparecerán el horizonte, el modelo y la procedencia de la estimación cuando se valide el flujo completo.</p></div><a class="btn btn-secondary" href="network.html">Ver arquitectura y siguiente etapa</a></section>
+<section aria-label="Propuesta de evolución MVP 2"><div class="section-heading"><div><span class="eyebrow">Siguiente etapa</span><h2>De observar a decidir</h2></div><span class="pending">MVP 2 · Propuesta</span></div><div class="pending-grid">
+<article class="glass-panel monitor-panel"><h2>Potencia y energía</h2><p>Incorporar fuentes verificadas de W y periodos de energía. No se derivan ahorros energéticos de la utilización de CPU.</p></article><article class="glass-panel monitor-panel"><h2>Recomendaciones</h2><p>Evaluar decisiones de optimización con restricciones de SLA, trazabilidad y aprobación humana.</p></article><article class="glass-panel monitor-panel"><h2>Topología e inventario</h2><p>Explorar racks y conexiones desde un inventario autorizado. La visualización física aún no representa equipos reales.</p></article></div></section></main>
 <script src="config.local.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.1"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
 <script src="appearance.js"></script><script src="metrics.js"></script><script src="monitoring.js"></script><script src="app.js"></script></body></html>

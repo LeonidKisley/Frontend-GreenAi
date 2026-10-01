@@ -19,6 +19,11 @@ async function metricRequest(operation, params = {}) {
   return response.json();
 }
 function renderCurrent(payload) {
+  put('summary-nodes', new Set(payload.series.map(s => JSON.stringify([s.resource.cluster, s.resource.id]))).size);
+  const usable = payload.series.filter(s => s.samples.at(-1)?.quality === 'valid' && Number.isFinite(s.samples.at(-1)?.value)).length;
+  put('summary-valid', `${usable} / ${payload.series.length}`);
+  put('summary-origin', [...new Set(payload.series.map(s => GreenMetrics.origin(s.origin)))].join(' · ') || 'Sin datos');
+  put('summary-quality', GreenMetrics.status(payload.dataStatus));
   const rows = payload.series.flatMap(series => {
     const sample = series.samples.at(-1);
     return [[series.resource.cluster, series.resource.id, Object.entries(series.labels).map(([k,v]) => `${k}=${v}`).join(', ') || '—',
@@ -92,6 +97,8 @@ async function refreshMetrics() {
       : `Actualizado ${new Date().toLocaleTimeString()} · zona ${Intl.DateTimeFormat().resolvedOptions().timeZone}`);
   } catch (error) {
     $('metric-rows').replaceChildren();
+    for (const id of ['summary-nodes','summary-valid']) put(id, '—');
+    for (const id of ['summary-origin','summary-quality']) put(id, 'Sin consulta vigente');
     historyChart?.destroy(); historyChart = null;
     put('current-status','Consulta no disponible'); put('history-status','Consulta no disponible'); put('warnings','');
     put('request-status', error.message);
