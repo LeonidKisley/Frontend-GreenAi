@@ -9,7 +9,9 @@ async function predictionRequest(path, options = {}) {
     const hints = {
       401: 'Tu sesión venció. Inicia sesión de nuevo antes de repetir la operación.',
       403: 'Tu cuenta no tiene permiso para esta operación.',
-      422: 'No hay una ventana de CPU utilizable. Espera más muestras o selecciona otro nodo.',
+      422: path.startsWith('/api/recommendations/')
+        ? (typeof body.detail === 'string' ? body.detail : 'Revisa los valores, fechas y formato de los datos enviados.')
+        : 'No hay una ventana de CPU utilizable. Espera más muestras o selecciona otro nodo.',
       503: 'El servicio o su modelo no están disponibles.',
       504: 'La consulta excedió el tiempo de espera.'
     };

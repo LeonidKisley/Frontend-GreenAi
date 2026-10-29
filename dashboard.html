@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Green AI | Monitoring</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="monitoring.css">
+<title>Green AI | Monitoring</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="monitoring.css?v=pmv2">
 </head><body class="dashboard-page page-shell">
-<header class="topbar glass-panel"><div class="brand-group"><div class="brand-name">Green AI <span>Observatorio</span></div><span class="brand-badge">MVP 1 · Monitoreo</span></div>
+<header class="topbar glass-panel"><div class="brand-group"><div class="brand-name">Green AI <span>Observatorio</span></div><span class="brand-badge">PMV 2 · Demostración</span></div>
 <div class="topbar-actions"><span id="user-name-display"></span><span id="user-role-badge" class="role-pill"></span>
 <button id="theme-toggle" class="btn btn-secondary" type="button" role="switch" aria-checked="false" aria-label="Modo claro">Modo oscuro</button><a href="network.html" class="btn btn-secondary">Topología</a><button id="logout-btn" class="btn btn-secondary">Cerrar sesión</button></div></header>
 <main class="dashboard-shell">
@@ -21,7 +21,7 @@
 <section class="chart-card glass-panel"><div class="chart-header"><h2>Evolución de la métrica</h2><span class="chart-sub">Histórico por serie</span></div><p id="history-status"></p><div class="monitor-chart"><canvas id="history-chart"></canvas></div></section>
 <section class="table-card glass-panel"><h2>Detalle por nodo</h2><p id="current-status"></p><p id="warnings"></p>
 <div class="table-wrapper"><table class="data-table"><thead><tr><th>Clúster</th><th>Nodo</th><th>Interfaz / filesystem</th><th>Valor</th><th>Procedencia</th><th>Calidad</th><th>Instante</th></tr></thead><tbody id="metric-rows"></tbody></table></div></section>
-<section class="glass-panel monitor-panel" aria-labelledby="prediction-title"><span class="brand-badge">MVP 1 · Predicción experimental</span><h2 id="prediction-title">Demanda futura de CPU</h2><p>Selecciona un clúster y un nodo en los filtros superiores. Prepararemos hasta dos horas de CPU disponibles; el modelo agrupa las muestras cada cinco minutos y necesita al menos seis intervalos consecutivos utilizables. Un historial corto o con huecos puede impedir la estimación.</p><p>Modelo entrenado con datos sintéticos para esta demostración. La estimación no acredita precisión en producción ni ahorro energético.</p>
+<section class="glass-panel monitor-panel" aria-labelledby="prediction-title"><span class="brand-badge">PMV 2 · Predicción experimental</span><h2 id="prediction-title">Demanda futura de CPU</h2><p>Selecciona un clúster y un nodo en los filtros superiores. Prepararemos hasta dos horas de CPU disponibles; el modelo agrupa las muestras cada cinco minutos y necesita al menos seis intervalos consecutivos utilizables. Un historial corto o con huecos puede impedir la estimación.</p><p>Modelo entrenado con datos sintéticos para esta demostración. La estimación no acredita precisión en producción ni ahorro energético.</p>
 <button id="predict-button" class="btn btn-primary" type="button">Estimar CPU del nodo seleccionado</button>
 <p id="prediction-status" role="status" aria-live="polite">Selecciona un nodo para comenzar.</p>
 <div id="prediction-result" hidden><dl class="prediction-details">
@@ -29,8 +29,23 @@
 <div><dt>Instante estimado</dt><dd id="prediction-time">—</dd></div><div><dt>Horizonte / modelo</dt><dd id="prediction-model">—</dd></div>
 <div><dt>Procedencia de entrada</dt><dd id="prediction-origin">—</dd></div><div><dt>Dataset utilizado</dt><dd id="prediction-dataset">—</dd></div>
 </dl><p id="prediction-warnings"></p></div></section>
-<section aria-label="Propuesta de evolución MVP 2"><div class="section-heading"><div><span class="eyebrow">Siguiente etapa</span><h2>De observar a decidir</h2></div><span class="pending">MVP 2 · Propuesta</span></div><div class="pending-grid">
-<article class="glass-panel monitor-panel"><h2>Potencia y energía</h2><p>Incorporar fuentes verificadas de W y periodos de energía. No se derivan ahorros energéticos de la utilización de CPU.</p></article><article class="glass-panel monitor-panel"><h2>Recomendaciones</h2><p>Evaluar decisiones de optimización con restricciones de SLA, trazabilidad y aprobación humana.</p></article><article class="glass-panel monitor-panel"><h2>Topología e inventario</h2><p>Explorar racks y conexiones desde un inventario autorizado. La visualización física aún no representa equipos reales.</p></article></div></section></main>
+<section class="glass-panel monitor-panel" aria-labelledby="recommendation-title">
+<span class="brand-badge">PMV 2 · Demostración</span><h2 id="recommendation-title">Recomendaciones con restricciones</h2>
+<p>Se consulta una nueva predicción del nodo seleccionado. Introduce telemetría del mismo nodo; los campos vacíos se consideran evidencia faltante. Los límites son de demostración y no acreditan cumplimiento de SLA.</p>
+<form id="recommendation-form"><div class="filters">
+<label>Memoria (%)<input id="policy-memory" type="number" min="0" max="100" step="any"></label>
+<label>Latencia p95 (ms)<input id="policy-latency" type="number" min="0" step="any"></label>
+<label>Errores (%)<input id="policy-errors" type="number" min="0" max="100" step="any"></label>
+<label>Instante de las mediciones (hora local)<input id="policy-time" type="datetime-local" step="1"></label>
+<label>Procedencia declarada<select id="policy-origin"><option value="simulated">Simulada</option><option value="observed">Observada</option></select></label>
+</div><button id="recommend-button" class="btn btn-primary" type="submit">Evaluar recomendación</button></form>
+<p id="recommendation-status" role="status" aria-live="polite">No se ejecutan cambios de infraestructura.</p>
+<p id="recommendation-result" style="white-space:pre-line"></p></section>
+<section class="glass-panel monitor-panel" aria-labelledby="energy-title"><h2 id="energy-title">Energía y CO₂e del periodo</h2>
+<p>Importa muestras de potencia en W, ordenadas y separadas como máximo por 300 segundos. El cálculo conserva la procedencia declarada y no demuestra ahorro.</p>
+<details><summary>Formato JSON del archivo</summary><pre style="white-space:pre-wrap">{"origin":"simulated","samples":[{"timestamp":"2026-10-28T00:00:00Z","watts":100},{"timestamp":"2026-10-28T00:05:00Z","watts":200}]}</pre><p>Opcionales: emissionFactorKgPerKwh y emissionFactorSource. Sin factor, CO₂e queda no evaluable.</p></details>
+<form id="energy-form"><label>Archivo de potencia (JSON, máximo 1,5 MB)<input id="energy-file" type="file" accept="application/json,.json" required></label><button id="energy-button" class="btn btn-primary" type="submit">Calcular energía</button></form>
+<p id="energy-status" role="status" aria-live="polite" style="white-space:pre-line">Sin muestras importadas.</p></section></main>
 <script src="config.local.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.1"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
-<script src="appearance.js"></script><script src="metrics.js"></script><script src="monitoring.js"></script><script src="app.js"></script><script src="prediction.js"></script></body></html>
+<script src="appearance.js"></script><script src="metrics.js"></script><script src="monitoring.js"></script><script src="app.js"></script><script src="prediction.js"></script><script src="recommendations.js"></script></body></html>
