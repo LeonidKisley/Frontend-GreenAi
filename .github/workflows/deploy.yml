@@ -66,7 +66,7 @@ jobs:
           config = {
               "supabaseUrl": os.environ["SUPABASE_URL"],
               "supabasePublishableKey": os.environ["SUPABASE_PUBLISHABLE_KEY"],
-              "gatewayBaseUrl": "http://127.0.0.1:8081"
+              "gatewayBaseUrl": "https://green-ai-gateway-1.onrender.com"
           }
 
           Path("dist/config.local.js").write_text(
