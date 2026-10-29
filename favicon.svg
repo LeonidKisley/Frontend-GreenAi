@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="leafGrad" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="55%" stop-color="#10B981"/>
+      <stop offset="100%" stop-color="#34D399"/>
+    </linearGradient>
+    <filter id="neonGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="2.4" result="blur"/>
+      <feFlood flood-color="#10B981" flood-opacity="0.55"/>
+      <feComposite in2="blur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <radialGradient id="bgGrad" cx="0.5" cy="0.4" r="1.1">
+      <stop offset="0%" stop-color="#065F46"/>
+      <stop offset="100%" stop-color="#03301F"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="64" height="64" rx="15" fill="url(#bgGrad)"/>
+
+  <g filter="url(#neonGlow)">
+    <path d="M32 13 C 42 21, 44 37, 32 51 C 20 37, 22 21, 32 13 Z"
+          fill="url(#leafGrad)"/>
+  </g>
+
+  <path d="M 32 47 C 31 36, 32 26, 32 16"
+        fill="none" stroke="#D1FAE5" stroke-width="2.2" stroke-linecap="round" opacity="0.9"/>
+  <path d="M 32 37 C 27 33, 23 30, 20 31"
+        fill="none" stroke="#D1FAE5" stroke-width="1.6" stroke-linecap="round" opacity="0.7"/>
+  <path d="M 32 33 C 37 29, 42 27, 45 28"
+        fill="none" stroke="#D1FAE5" stroke-width="1.6" stroke-linecap="round" opacity="0.7"/>
+</svg>
